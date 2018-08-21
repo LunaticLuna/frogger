@@ -1,2 +1,0 @@
-# frogger
-frogger-like game
