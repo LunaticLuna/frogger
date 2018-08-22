@@ -1,15 +1,16 @@
-// Enemies our player must avoid
-const scale = 50;
-const xblock = 101;
-const yblock = 83;
-const yOffSet = -20;
-const speedOffSet = 200;
+const SCALE = 50;
+const BLOCK_WIDTH = 101;
+const BLOCK_HEIGHT = 83;
+const OFFSET_Y = -20;
+const OFFSET_SPEED = 200;
 let GAME_OVER = false;
 function getRandomInt(min, max) {
   min = Math.ceil(min);
   max = Math.floor(max);
   return Math.floor(Math.random() * (max - min)) + min; //The maximum is exclusive and the minimum is inclusive
 }
+
+// Enemies our player must avoid
 var Enemy = function() {
     // Variables applied to each of our instances go here,
     // we've provided one for you to get started
@@ -18,8 +19,8 @@ var Enemy = function() {
     // a helper we've provided to easily load images
     this.sprite = 'images/enemy-bug.png';
     this.x = getRandomInt(-500,-100);//delay bugs to show on canvas
-    this.y = yOffSet + getRandomInt(1,4) * yblock;
-    this.speed = speedOffSet + getRandomInt(1,4) * scale;
+    this.y = OFFSET_Y + getRandomInt(1,4) * BLOCK_HEIGHT;
+    this.speed = OFFSET_SPEED + getRandomInt(1,4) * SCALE;
 
 };
 
@@ -36,8 +37,8 @@ Enemy.prototype.update = function(dt) {
             this.checkCollision(player);
         }else{
             this.x = getRandomInt(-500,-100);
-            this.y = yOffSet + getRandomInt(1,4) * yblock;
-            this.speed = speedOffSet + getRandomInt(1,4) * scale;
+            this.y = OFFSET_Y + getRandomInt(1,4) * BLOCK_HEIGHT;
+            this.speed = OFFSET_SPEED + getRandomInt(1,4) * SCALE;
         }
     }
 
@@ -65,8 +66,8 @@ var Player = function(){
     this.sprite = 'images/char-princess-girl.png';
 
     //initial coordinate (2,4);
-    this.x = 2 * xblock;
-    this.y = yOffSet + 4 * yblock;
+    this.x = 2 * BLOCK_WIDTH;
+    this.y = OFFSET_Y + 4 * BLOCK_HEIGHT;
 }
 Player.prototype.update = function(x = 0, y = 0){
     this.x += x;
@@ -79,13 +80,13 @@ Player.prototype.render = function(){
 Player.prototype.handleInput = function(key){
     if (!GAME_OVER){
         if (key === 'up'){
-            this.update(0,-yblock);
+            this.update(0,-BLOCK_HEIGHT);
         }else if (key === 'down'){
-            this.update(0,yblock);
+            this.update(0,BLOCK_HEIGHT);
         }else if (key === 'left'){
-            this.update(-xblock,0);
+            this.update(-BLOCK_WIDTH,0);
         }else if (key === 'right'){
-            this.update(xblock,0);
+            this.update(BLOCK_WIDTH,0);
         }
     }
 }
