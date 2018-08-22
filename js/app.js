@@ -3,6 +3,8 @@ const BLOCK_WIDTH = 101;
 const BLOCK_HEIGHT = 83;
 const OFFSET_Y = -20;
 const OFFSET_SPEED = 200;
+const ROWS = 6;
+const COLS = 5;
 let GAME_OVER = false;
 function getRandomInt(min, max) {
   min = Math.ceil(min);
@@ -18,7 +20,7 @@ var Enemy = function() {
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
     this.sprite = 'images/enemy-bug.png';
-    this.x = getRandomInt(-500,-100);//delay bugs to show on canvas
+    this.x = getRandomInt(-600,-100);//delay bugs to show on canvas
     this.y = OFFSET_Y + getRandomInt(1,5) * BLOCK_HEIGHT;//4 stone blocks
     this.speed = OFFSET_SPEED + getRandomInt(1,4) * SCALE;
 
@@ -36,7 +38,7 @@ Enemy.prototype.update = function(dt) {
             this.checkCollision(player);
         }else{
             this.x = getRandomInt(-500,-100);
-            this.y = OFFSET_Y + getRandomInt(1,4) * BLOCK_HEIGHT;
+            this.y = OFFSET_Y + getRandomInt(1,5) * BLOCK_HEIGHT;
             this.speed = OFFSET_SPEED + getRandomInt(1,4) * SCALE;
         }
     }
@@ -44,8 +46,10 @@ Enemy.prototype.update = function(dt) {
 
 };
 Enemy.prototype.checkCollision = function(player){
-    if(this.y === player.y){
-        if (Math.abs(this.x-player.x) <= 50){
+    let playerY = player.coordY * BLOCK_HEIGHT + OFFSET_Y;
+    let playerX = player.coordX * BLOCK_WIDTH;
+    if(this.y === playerY){
+        if (Math.abs(this.x-playerX) <= 50){
             GAME_OVER = true;
         }
     }
@@ -64,47 +68,53 @@ Enemy.prototype.render = function() {
 var Player = function(){
     this.sprite = 'images/char-princess-girl.png';
 
-    //initial coordinate (2,4);
-    this.x = 2 * BLOCK_WIDTH;
-    this.y = OFFSET_Y + 5 * BLOCK_HEIGHT;
+    //initial coordinate (2,5);
+    this.coordX = 2;
+    this.coordY = 5;
 }
 Player.prototype.update = function(x = 0, y = 0){
     if (x > 0){
-        if (this.x < ctx.canvas.width- BLOCK_WIDTH){
-            this.x += x;
+        if (this.coordX < COLS- 1){
+            this.coordX += x;
         }
     }else{
-        if (this.x >= BLOCK_WIDTH){
-            this.x += x;
+        if (this.coordX >= 1){
+            this.coordX += x;
         }
     }
 
     if (y > 0){
-        if (this.y < ctx.canvas.height- 3 * BLOCK_HEIGHT){
-            this.y += y;
+        if (this.coordY < ROWS - 1){
+            this.coordY += y;
         }
     }else{
-        if (this.y >= 0){
-            this.y += y;
+        if (this.coordY >= 1){
+            this.coordY += y;
         }
+    }
+    if (this.coordY === 0){
+        GAME_OVER = true
     }
 
 
 
 }
 Player.prototype.render = function(){
-    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+    x = this.coordX * BLOCK_WIDTH;
+    y = this.coordY * BLOCK_HEIGHT + OFFSET_Y;
+
+    ctx.drawImage(Resources.get(this.sprite), x, y);
 }
 Player.prototype.handleInput = function(key){
     if (!GAME_OVER){
         if (key === 'up'){
-            this.update(0,-BLOCK_HEIGHT);
+            this.update(0,-1);
         }else if (key === 'down'){
-            this.update(0,BLOCK_HEIGHT);
+            this.update(0,1);
         }else if (key === 'left'){
-            this.update(-BLOCK_WIDTH,0);
+            this.update(-1,0);
         }else if (key === 'right'){
-            this.update(BLOCK_WIDTH,0);
+            this.update(1,0);
         }
     }
 }
@@ -112,7 +122,7 @@ Player.prototype.handleInput = function(key){
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
 
-var allEnemies = [new Enemy(),new Enemy(),new Enemy(),new Enemy()]
+var allEnemies = [new Enemy(),new Enemy(),new Enemy(),new Enemy(),new Enemy()]
 var player = new Player()
 
 // This listens for key presses and sends the keys to your
