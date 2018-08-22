@@ -19,7 +19,7 @@ var Enemy = function() {
     // a helper we've provided to easily load images
     this.sprite = 'images/enemy-bug.png';
     this.x = getRandomInt(-500,-100);//delay bugs to show on canvas
-    this.y = OFFSET_Y + getRandomInt(1,4) * BLOCK_HEIGHT;
+    this.y = OFFSET_Y + getRandomInt(1,5) * BLOCK_HEIGHT;//4 stone blocks
     this.speed = OFFSET_SPEED + getRandomInt(1,4) * SCALE;
 
 };
@@ -31,7 +31,6 @@ Enemy.prototype.update = function(dt) {
     // which will ensure the game runs at the same speed for
     // all computers.
     if (!GAME_OVER){
-        console.log(GAME_OVER)
         if (this.x < ctx.canvas.width){
             this.x += this.speed * dt;
             this.checkCollision(player);
@@ -67,11 +66,30 @@ var Player = function(){
 
     //initial coordinate (2,4);
     this.x = 2 * BLOCK_WIDTH;
-    this.y = OFFSET_Y + 4 * BLOCK_HEIGHT;
+    this.y = OFFSET_Y + 5 * BLOCK_HEIGHT;
 }
 Player.prototype.update = function(x = 0, y = 0){
-    this.x += x;
-    this.y += y;
+    if (x > 0){
+        if (this.x < ctx.canvas.width- BLOCK_WIDTH){
+            this.x += x;
+        }
+    }else{
+        if (this.x >= BLOCK_WIDTH){
+            this.x += x;
+        }
+    }
+
+    if (y > 0){
+        if (this.y < ctx.canvas.height- 3 * BLOCK_HEIGHT){
+            this.y += y;
+        }
+    }else{
+        if (this.y >= 0){
+            this.y += y;
+        }
+    }
+
+
 
 }
 Player.prototype.render = function(){
